@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Chat</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<body class="body-no-x-scroll">
+<noscript>
+    <h2 class="noscript">
+        Seems your browser doesn't support Javascript! Websocket relies on Javascript
+        being enabled. Please enable Javascript and reload this page!
+    </h2>
+</noscript>
+
+<div class="container">
+
+    <!--Connection-->
+    <div class="col-md-12">
+        <div class="col-md-5 col-md-offset-3">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="connect">WebSocket connection:</label>
+                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-1 col-md-offset-3">
+            <button class="btn btn-default">
+                <a th:href="@{/logout}">Logout</a>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        <!--Discussions-->
+        <div class="col-md-5">
+            <div class="search-area">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button id="newDiscussion" class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </span>
+                    <input id="findDiscussion" type="text" class="form-control" placeholder="Search for..." autocomplete="off">
+                    <span class="input-group-btn">
+                        <button id="clear" class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="discussion-container">
+                <div th:each="item : ${discussions}" class="discussion" th:id="'discussion-' + ${item.id}">
+                    <div class="col-md-12">
+                        <div class="row item">
+                            <div class="col-md-2">
+                                <img class="round" th:src="@{'http://localhost:8080/image/user/' + ${item.users[0].id}}"/>
+                            </div>
+                            <div class="col-md-10 discussion-name">
+                                <div class="col-md-10 d-name" th:text="${item.users[0].login}"></div>
+                                <div class="col-md-2">
+                                    <span class="glyphicon glyphicon-remove pull-right x-remove"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Messages-->
+        <div class="col-md-7">
+            <div class="discussion-header"></div>
+            <div class="message-container">
+                <!--<div class="message">-->
+                    <!--<div class="col-md-12">-->
+                        <!--<div class="row item">-->
+                            <!--<div class="col-md-2">-->
+                                <!--<img th:src="@{'http://localhost:8080/image/user/' + ${user.id}}" class="round"/>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-10 message-text">-->
+                                <!--Message sample-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+            <!--Sending-->
+            <div class="message-sender">
+                <div class="input-group">
+                    <textarea id="message" class="form-control text-area" rows="1"></textarea>
+                    <span class="input-group-btn button-send">
+                        <button class="btn btn-default" type="button" id="sendMessage">
+                            <span class="glyphicon glyphicon-send send"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div id="typing"></div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div id="modal_form">
+    <div style="min-height: 500px">
+
+        <div class="token-container">
+            <!--<div class="token">-->
+                <!--<div class="token-login">Example</div>-->
+                <!--<div class="token-x">-->
+                    <!--<span id="token-122" class="glyphicon glyphicon-remove pull-right x-remove"></span>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+
+        <div class="input-group">
+            <input id="user-search-key" type="text" class="form-control" placeholder="Search for..." autocomplete="off">
+                    <span class="input-group-btn">
+                        <button id="user-search" class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+        </div>
+
+        <div id="user-container" style="height: 380px; overflow: auto;">
+
+        </div>
+
+    </div>
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="col-md-offset-4">
+                        <button id="accept" class="btn btn-success">Create</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="col-md-offset-4">
+                        <button id="modal_close" class="btn btn-danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div id="overlay"></div>
+
+</body>
+</html>
