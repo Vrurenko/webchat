@@ -148,3 +148,7 @@
 .messagePage {
 
 }
+
+input[type=file].form-control {
+    height: auto;
+}
